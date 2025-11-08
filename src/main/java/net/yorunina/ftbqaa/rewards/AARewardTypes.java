@@ -1,9 +1,9 @@
-package net.yorunina.ftbquestactuallyadditions.rewards;
+package net.yorunina.ftbqaa.rewards;
 
 import dev.ftb.mods.ftblibrary.icon.Icons;
 import dev.ftb.mods.ftbquests.quest.reward.RewardType;
 import dev.ftb.mods.ftbquests.quest.reward.RewardTypes;
-import net.yorunina.ftbquestactuallyadditions.FTBQuestActuallyAdditions;
+import net.yorunina.ftbqaa.FTBQuestActuallyAdditions;
 
 public interface AARewardTypes {
     RewardType ASTAGE = RewardTypes.register(FTBQuestActuallyAdditions.id( "astages"), AStageReward::new, () -> Icons.CONTROLLER);

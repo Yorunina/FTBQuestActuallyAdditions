@@ -5,43 +5,46 @@ import dev.latvian.mods.itemfilters.item.StringValueFilterItem;
 import net.minecraft.world.item.ItemStack;
 import slimeknights.tconstruct.library.modifiers.ModifierId;
 import slimeknights.tconstruct.library.tools.helper.ModifierUtil;
+import slimeknights.tconstruct.library.tools.nbt.ToolStack;
+import slimeknights.tconstruct.library.tools.stat.IToolStat;
+import slimeknights.tconstruct.library.tools.stat.ToolStatId;
+import slimeknights.tconstruct.library.tools.stat.ToolStats;
 
 import javax.annotation.Nullable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TconToolModifierFilterItem extends StringValueFilterItem {
+public class TconToolStatsFilterItem extends StringValueFilterItem {
 
-    public static class ModifierCheck {
+    public static class StatsCheck {
         public int mode; // 0: ==, 1: >=, 2: <=, 3: >, 4: <
-        public ModifierId modifierId;
-        public int level;
+        public IToolStat<?> stats;
+        public float num;
     }
 
-    public static class ModifierData extends StringValueData<ModifierCheck> {
-        public ModifierData(ItemStack is) {
+    public static class StatsData extends StringValueData<StatsCheck> {
+        public StatsData(ItemStack is) {
             super(is);
         }
 
         @Nullable
         @Override
-        protected ModifierCheck fromString(String s) {
+        protected StatsCheck fromString(String s) {
 
-            Pattern pattern = Pattern.compile("^([a-zA-Z:]+)\\s*([<>=]+)\\s*(\\d+)$");
+            Pattern pattern = Pattern.compile("([a-zA-Z:_]+)\\s*([<>=]+)\\s*([\\d\\.]+)");
             Matcher matcher = pattern.matcher(s.trim());
 
             if (matcher.matches()) {
-                String modifierId = matcher.group(1);
+                StatsCheck check = new StatsCheck();
+                String statsIdStr = matcher.group(1);
                 String operator = matcher.group(2);
-                int level = Integer.parseInt(matcher.group(3));
+                check.num = Float.parseFloat(matcher.group(3));
 
-                ModifierCheck check = new ModifierCheck();
-
-                if (!modifierId.contains(":")) {
-                    modifierId = "tconstruct:" + modifierId;
+                if (!statsIdStr.contains(":")) {
+                    statsIdStr = "tconstruct:" + statsIdStr;
                 }
-
-                check.modifierId = new ModifierId(modifierId);
+                ToolStatId statsId = new ToolStatId(statsIdStr);
+                check.stats = ToolStats.getToolStat(statsId);
 
                 switch (operator) {
                     case ">=":
@@ -64,20 +67,19 @@ public class TconToolModifierFilterItem extends StringValueFilterItem {
                         return null; // Unknown operator
                 }
 
-                check.level = level;
                 return check;
             }
             return null; // No match
         }
 
         @Override
-        protected String toString(ModifierCheck value) {
-            if (value == null || value.modifierId == null) {
+        protected String toString(StatsCheck value) {
+            if (value == null || value.stats == null) {
                 return "";
             }
 
             StringBuilder builder = new StringBuilder();
-            builder.append(value.modifierId); // Get the full resource location of the modifier
+            builder.append(value.stats.getName()); // Get the full resource location of the modifier
 
             switch (value.mode) {
                 case 1 -> builder.append(" >= ");
@@ -87,7 +89,7 @@ public class TconToolModifierFilterItem extends StringValueFilterItem {
                 case 0 -> builder.append(" == "); // Assuming 0 is for equality
             }
 
-            builder.append(value.level);
+            builder.append(value.num);
 
             return builder.toString();
         }
@@ -95,7 +97,7 @@ public class TconToolModifierFilterItem extends StringValueFilterItem {
 
     @Override
     public StringValueData<?> createData(ItemStack stack) {
-        return new ModifierData(stack);
+        return new StatsData(stack);
     }
 
     @Override
@@ -104,14 +106,14 @@ public class TconToolModifierFilterItem extends StringValueFilterItem {
             return false;
         }
 
-        ModifierData data = getStringValueData(filter);
+        StatsData data = getStringValueData(filter);
 
-        if (data.getValue() == null || data.getValue().modifierId == null) {
+        if (data.getValue() == null || data.getValue().stats == null) {
             return false;
         }
-
-        int actualModifierLevel = ModifierUtil.getModifierLevel(stack, data.getValue().modifierId);
-        int requiredLevel = data.getValue().level;
+        ToolStack tool = ToolStack.from(stack);
+        float actualModifierLevel = (float) tool.getStats().get(data.getValue().stats);
+        float requiredLevel = data.getValue().num;
 
         return switch (data.getValue().mode) {
             case 1 -> actualModifierLevel >= requiredLevel;
@@ -125,7 +127,7 @@ public class TconToolModifierFilterItem extends StringValueFilterItem {
 
     @Override
     public String getHelpKey() {
-        return "itemfilters.help_text.tcon_tool_modifier";
+        return "itemfilters.help_text.tcon_tool_stats";
     }
 
 

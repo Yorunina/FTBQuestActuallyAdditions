@@ -1,4 +1,4 @@
-package net.yorunina.ftbquestactuallyadditions.rewards;
+package net.yorunina.ftbqaa.rewards;
 
 import com.alessandro.astages.capability.PlayerStage;
 import com.alessandro.astages.capability.PlayerStageProvider;
