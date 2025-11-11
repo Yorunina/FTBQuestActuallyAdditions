@@ -1,8 +1,8 @@
 package net.yorunina.ftbqaa.tasks;
 
-import com.alessandro.astages.capability.PlayerStage;
-import com.alessandro.astages.capability.PlayerStageProvider;
-import com.alessandro.astages.capability.ServerStageData;
+import com.alessandro.astages.api.AStagesUtils;
+import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.capability.ServerStage;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.TeamData;
@@ -15,7 +15,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class AStageTask extends AbstractBooleanTask {
     private String stage = "";
@@ -71,15 +70,10 @@ public class AStageTask extends AbstractBooleanTask {
 
     public boolean canSubmit(TeamData teamData, ServerPlayer player) {
         if (this.isServer) {
-            return ServerStageData.getData(player.server).has(this.stage);
+            return ServerStage.getServerStages().contains(this.stage);
         } else {
-            LazyOptional<PlayerStage> cap = player.getCapability(PlayerStageProvider.PLAYER_STAGE);
-            if  (cap.isPresent()) {
-                PlayerStage stage = cap.resolve().get();
-                return stage.getStages().contains(this.stage);
-            }
+            return AStagesUtils.hasStage(AHolder.player(player), this.stage);
         }
-        return false;
     }
 
 }

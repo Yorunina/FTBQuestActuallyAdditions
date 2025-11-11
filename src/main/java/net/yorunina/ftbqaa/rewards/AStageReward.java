@@ -1,8 +1,8 @@
 package net.yorunina.ftbqaa.rewards;
 
-import com.alessandro.astages.capability.PlayerStage;
-import com.alessandro.astages.capability.PlayerStageProvider;
-import com.alessandro.astages.capability.ServerStageData;
+import com.alessandro.astages.api.AStagesUtils;
+import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.capability.*;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
@@ -74,28 +74,15 @@ public class AStageReward extends Reward {
     public void claim(ServerPlayer player, boolean notify) {
         if (this.isServer) {
             if (this.remove) {
-                ServerStageData.getData(player.server).remove(this.stage);
+                ServerStage.removeServerStage(this.stage);
             } else {
-                ServerStageData.getData(player.server).add(this.stage);
+                ServerStage.addServerStage(this.stage);
             }
         } else {
-            player.getCapability(PlayerStageProvider.PLAYER_STAGE).ifPresent((playerStage) -> {
-                if (this.remove) {
-                    playerStage.removeStage(this.stage);
-                    playerStage.setChangedFor(player, PlayerStage.Operation.REMOVE, this.stage, true);
-                } else {
-                    playerStage.addStage(this.stage);
-                    playerStage.setChangedFor(player, PlayerStage.Operation.ADD, this.stage, true);
-                }
-            });
-        }
-
-
-        if (notify) {
             if (this.remove) {
-                player.sendSystemMessage(Component.translatable("commands.gamestage.remove.target", new Object[]{this.stage}), true);
+                AStagesUtils.removeStage(AHolder.player(player), this.stage, true);
             } else {
-                player.sendSystemMessage(Component.translatable("commands.gamestage.add.target", new Object[]{this.stage}), true);
+                AStagesUtils.addStage(AHolder.player(player), this.stage, true);
             }
         }
 

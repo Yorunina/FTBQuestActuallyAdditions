@@ -95,7 +95,7 @@ dependencies {
     implementation fg.deobf("curse.maven:ftb-teams-forge-404468:4623116")
     implementation fg.deobf("curse.maven:item-filters-309674:4838266")
 
-    implementation fg.deobf("curse.maven:astages-1120180:6892926")
+    implementation fg.deobf("curse.maven:astages-1120180:7204574")
 }
 
 tasks.named('processResources', ProcessResources).configure {
