@@ -74,9 +74,9 @@ public class AStageReward extends Reward {
     public void claim(ServerPlayer player, boolean notify) {
         if (this.isServer) {
             if (this.remove) {
-                ServerStage.removeServerStage(this.stage);
+                AStagesUtils.removeStage(AHolder.server(), this.stage, true);
             } else {
-                ServerStage.addServerStage(this.stage);
+                AStagesUtils.addStage(AHolder.server(), this.stage, true);
             }
         } else {
             if (this.remove) {
