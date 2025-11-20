@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "ftbqaa.refmap.json",
   "mixins": [
+    "MixinStageBarrierBlockEntity"
   ],
   "client": [
   ],
