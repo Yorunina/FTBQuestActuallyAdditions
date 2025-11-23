@@ -11,5 +11,9 @@
   "itemfilters.help_text.tcon_tool_material": "<Material>;[partSlot1,partSlot2,...] If partSlots are omitted, any part with the material will match. If specified, all listed part slots must be of that material.",
   "item.ftbqaa.tcon_tool_material": "Tcon Material Filter",
   "itemfilters.help_text.tcon_tool_stats": "<Stats> (>= || > || < || <= || ==) <float>",
-  "item.ftbqaa.tcon_tool_stats": "Tcon Stats Filter"
+  "item.ftbqaa.tcon_tool_stats": "Tcon Stats Filter",
+  "itemfilters.help_text.exposure_photo_entity": "<EntityID> (>= || > || < || <= || ==) <Distance>; <EntityID2> (>= || > || < || <= || ==) <Distance>; ...",
+  "item.ftbqaa.exposure_photo_entity": "Exposure Photo Entity Filter",
+  "itemfilters.help_text.exposure_photo_structure": "<Structure> ; <Structure2> ; ...",
+  "item.ftbqaa.exposure_photo_structure": "Exposure Photo Structure Filter"
 }

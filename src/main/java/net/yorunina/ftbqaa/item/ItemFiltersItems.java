@@ -18,6 +18,11 @@ public class ItemFiltersItems {
             TconToolMaterialFilterItem::new);
     public static final RegistryObject<Item> TCON_TOOL_STATS_FILTER = ITEMS.register("tcon_tool_stats",
             TconToolStatsFilterItem::new);
+    public static final RegistryObject<Item> EXPOSURE_PHOTO_STRUCTURE_FILTER = ITEMS.register("exposure_photo_structure",
+            PhotoStructureFilterItem::new);
+    public static final RegistryObject<Item> EXPOSURE_PHOTO_ENTITY_FILTER = ITEMS.register("exposure_photo_entity",
+            PhotoEntityFilterItem::new);
+
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

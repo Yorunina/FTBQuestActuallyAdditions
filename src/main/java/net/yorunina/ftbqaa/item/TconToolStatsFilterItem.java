@@ -129,6 +129,4 @@ public class TconToolStatsFilterItem extends StringValueFilterItem {
     public String getHelpKey() {
         return "itemfilters.help_text.tcon_tool_stats";
     }
-
-
 }

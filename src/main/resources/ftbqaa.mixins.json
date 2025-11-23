@@ -2,9 +2,10 @@
   "required": true,
   "minVersion": "0.8",
   "package": "net.yorunina.ftbqaa.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "refmap": "ftbqaa.refmap.json",
   "mixins": [
+    "MixinItemEntity",
     "MixinStageBarrierBlockEntity"
   ],
   "client": [

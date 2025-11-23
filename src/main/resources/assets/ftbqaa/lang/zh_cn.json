@@ -11,5 +11,9 @@
   "itemfilters.help_text.tcon_tool_material": "<Material>;[partSlot1,partSlot2...]  如果没有partSlot，则任一配件采用材料即符合；如果有，则必须槽位均为对应材料",
   "item.ftbqaa.tcon_tool_material": "匠魂材料过滤器",
   "itemfilters.help_text.tcon_tool_stats": "<Stats> (>= || > || < || <= || ==) <float>",
-  "item.ftbqaa.tcon_tool_stats": "匠魂属性过滤器"
+  "item.ftbqaa.tcon_tool_stats": "匠魂属性过滤器",
+  "itemfilters.help_text.exposure_photo_entity": "<EntityID> (>= || > || < || <= || ==) <Distance>; <EntityID2> (>= || > || < || <= || ==) <Distance>; ...",
+  "item.ftbqaa.exposure_photo_entity": "照片实体过滤器",
+  "itemfilters.help_text.exposure_photo_structure": "<Structure> ; <Structure2> ; ...",
+  "item.ftbqaa.exposure_photo_structure": "照片结构过滤器"
 }

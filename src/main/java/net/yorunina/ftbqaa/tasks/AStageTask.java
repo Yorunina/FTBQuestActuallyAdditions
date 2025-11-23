@@ -25,7 +25,7 @@ public class AStageTask extends AbstractBooleanTask {
     }
 
     public TaskType getType() {
-        return AATaskTypes.ASTAGE;
+        return AATaskTypes.ASTAGES;
     }
 
     public void writeData(CompoundTag nbt) {
@@ -75,5 +75,4 @@ public class AStageTask extends AbstractBooleanTask {
             return AStagesUtils.hasStage(AHolder.player(player), this.stage);
         }
     }
-
 }
