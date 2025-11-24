@@ -4,6 +4,8 @@
   "ftbquests.reward.ftbqaa.astages": "AStages奖励",
   "ftbquests.reward.ftbqaa.astages.isServer": "是否为世界阶段",
   "ftbquests.reward.ftbqaa.astages.remove": "是否移除",
+  "ftbquests.reward.ftbqaa.active_way_stone": "传送石碑奖励",
+  "ftbquests.reward.ftbqaa.active_way_stone.remove": "是否移除",
   "itemfilters.help_text.durability": "最大耐久度过滤器",
   "item.ftbqaa.durability": "最大耐久度过滤器",
   "itemfilters.help_text.tcon_tool_modifier": "<Modifier> (>= || > || < || <= || ==) <int>",

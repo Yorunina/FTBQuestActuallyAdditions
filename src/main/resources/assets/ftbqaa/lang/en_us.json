@@ -4,6 +4,8 @@
   "ftbquests.reward.ftbqaa.astages": "AStages Reward",
   "ftbquests.reward.ftbqaa.astages.remove": "Remove",
   "ftbquests.reward.ftbqaa.astages.isServer": "Server Stage",
+  "ftbquests.reward.ftbqaa.active_way_stone": "Waystone Reward",
+  "ftbquests.reward.ftbqaa.active_way_stone.remove": "Remove",
   "itemfilters.help_text.durability": "Durability Item Filter",
   "item.ftbqaa.durability": "Durability Item Filter",
   "itemfilters.help_text.tcon_tool_modifier": "<Modifier> (>= || > || < || <= || ==) <level>",
