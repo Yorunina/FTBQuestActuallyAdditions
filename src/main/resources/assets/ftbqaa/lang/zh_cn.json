@@ -10,6 +10,8 @@
   "ftbquests.task.ftbqaa.dim_net.slotCapacity": "插槽容量",
   "ftbquests.task.ftbqaa.dim_net.slotMaxSize": "插槽最大物品数",
   "ftbquests.task.ftbqaa.dim_net.title": "维度网络大小至少为 %s * %s",
+  "ftbquests.task.ftbqaa.eat_item": "食用任务",
+  "ftbquests.task.ftbqaa.eat_item.count": "食用物品数量",
   "itemfilters.help_text.durability": "最大耐久度过滤器",
   "item.ftbqaa.durability": "最大耐久度过滤器",
   "itemfilters.help_text.tcon_tool_modifier": "<Modifier> (>= || > || < || <= || ==) <int>",

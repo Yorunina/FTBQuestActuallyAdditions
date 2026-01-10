@@ -10,6 +10,8 @@
   "ftbquests.task.ftbqaa.dim_net.slotCapacity": "Slot Capacity",
   "ftbquests.task.ftbqaa.dim_net.slotMaxSize": "Slot Max Size",
   "ftbquests.task.ftbqaa.dim_net.title": "Dimension Network Size At Least %s * %s",
+  "ftbquests.task.ftbqaa.eat_item": "Eat Item Task",
+  "ftbquests.task.ftbqaa.eat_item.count": "Eat Item Count",
   "itemfilters.help_text.durability": "Durability Item Filter",
   "item.ftbqaa.durability": "Durability Item Filter",
   "itemfilters.help_text.tcon_tool_modifier": "<Modifier> (>= || > || < || <= || ==) <level>",
