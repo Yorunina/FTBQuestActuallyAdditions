@@ -1,7 +1,5 @@
 package net.yorunina.ftbqaa.rewards;
 
-import com.alessandro.astages.api.AStagesUtils;
-import com.alessandro.astages.api.holder.AHolder;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;

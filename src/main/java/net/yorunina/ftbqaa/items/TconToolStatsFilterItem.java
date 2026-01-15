@@ -1,10 +1,8 @@
-package net.yorunina.ftbqaa.item;
+package net.yorunina.ftbqaa.items;
 
 import dev.latvian.mods.itemfilters.item.StringValueData;
 import dev.latvian.mods.itemfilters.item.StringValueFilterItem;
 import net.minecraft.world.item.ItemStack;
-import slimeknights.tconstruct.library.modifiers.ModifierId;
-import slimeknights.tconstruct.library.tools.helper.ModifierUtil;
 import slimeknights.tconstruct.library.tools.nbt.ToolStack;
 import slimeknights.tconstruct.library.tools.stat.IToolStat;
 import slimeknights.tconstruct.library.tools.stat.ToolStatId;

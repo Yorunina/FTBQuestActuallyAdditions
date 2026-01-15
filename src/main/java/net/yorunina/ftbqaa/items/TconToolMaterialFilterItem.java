@@ -1,20 +1,16 @@
-package net.yorunina.ftbqaa.item;
+package net.yorunina.ftbqaa.items;
 
 import com.google.common.base.Joiner;
 import dev.latvian.mods.itemfilters.item.StringValueData;
 import dev.latvian.mods.itemfilters.item.StringValueFilterItem;
-import net.minecraft.util.StringUtil;
 import net.minecraft.world.item.ItemStack;
 import slimeknights.tconstruct.library.materials.definition.MaterialId;
 import slimeknights.tconstruct.library.materials.definition.MaterialVariant;
-import slimeknights.tconstruct.library.modifiers.ModifierId;
-import slimeknights.tconstruct.library.tools.helper.ModifierUtil;
 import slimeknights.tconstruct.library.tools.nbt.ToolStack;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

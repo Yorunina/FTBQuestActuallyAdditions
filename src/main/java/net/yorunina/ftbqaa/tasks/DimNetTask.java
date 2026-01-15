@@ -5,7 +5,8 @@ import com.wintercogs.beyonddimensions.Api.DataBase.Storage.UnifiedStorage;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.TeamData;
-import dev.ftb.mods.ftbquests.quest.task.*;
+import dev.ftb.mods.ftbquests.quest.task.AbstractBooleanTask;
+import dev.ftb.mods.ftbquests.quest.task.TaskType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -24,7 +25,7 @@ public class DimNetTask extends AbstractBooleanTask {
     }
 
     public TaskType getType() {
-        return AATaskTypes.DIM_NET;
+        return TasksRegistry.DIM_NET;
     }
 
     public void writeData(CompoundTag nbt) {

@@ -1,41 +1,38 @@
-package net.yorunina.ftbqaa.item;
+package net.yorunina.ftbqaa.items;
 
 import dev.latvian.mods.itemfilters.item.StringValueData;
 import dev.latvian.mods.itemfilters.item.StringValueFilterItem;
 import io.github.mortuusars.exposure.item.PhotographItem;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
-import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PhotoLightLevelFilterItem extends StringValueFilterItem {
+public class PhotoDayTimeFilterItem extends StringValueFilterItem {
 
 
-    public static class LightLevelCheck {
-        public int lightLevel;
+    public static class DayTimeCheck {
+        public int dayTime;
         public int mode;
     }
 
-    public static class LightLevelData extends StringValueData<LightLevelCheck> {
-        public LightLevelData(ItemStack is) {
+    public static class DayTimeData extends StringValueData<DayTimeCheck> {
+        public DayTimeData(ItemStack is) {
             super(is);
         }
 
         @Nullable
         @Override
-        protected LightLevelCheck fromString(String s) {
-            LightLevelCheck check = new LightLevelCheck();
+        protected DayTimeCheck fromString(String s) {
+            DayTimeCheck check = new DayTimeCheck();
             Pattern pattern = Pattern.compile("^([<>=]+)\\s*(\\d+)$");
             Matcher matcher = pattern.matcher(s.trim());
             if (matcher.matches()) {
                 String operator = matcher.group(1);
-                check.lightLevel = Integer.parseInt(matcher.group(2));
+                check.dayTime = Integer.parseInt(matcher.group(2));
                 switch (operator) {
                     case ">=":
                         check.mode = 1;
@@ -59,26 +56,26 @@ public class PhotoLightLevelFilterItem extends StringValueFilterItem {
         }
 
         @Override
-        protected String toString(@Nullable LightLevelCheck lightLevelCheck) {
-            if (lightLevelCheck == null) {
+        protected String toString(@Nullable DayTimeCheck dayTimeCheck) {
+            if (dayTimeCheck == null) {
                 return "";
             }
             StringBuilder builder = new StringBuilder();
-            switch (lightLevelCheck.mode) {
+            switch (dayTimeCheck.mode) {
                 case 1 -> builder.append(" >= ");
                 case 2 -> builder.append(" <= ");
                 case 3 -> builder.append(" > ");
                 case 4 -> builder.append(" < ");
                 case 0 -> builder.append(" == "); // Assuming 0 is for equality
             }
-            builder.append(lightLevelCheck.lightLevel);
+            builder.append(dayTimeCheck.dayTime);
             return builder.toString();
         }
     }
 
     @Override
     public StringValueData<?> createData(ItemStack stack) {
-        return new LightLevelData(stack);
+        return new DayTimeData(stack);
     }
 
     @Override
@@ -88,20 +85,20 @@ public class PhotoLightLevelFilterItem extends StringValueFilterItem {
         if (!(item instanceof PhotographItem)) return false;
         if (!stack.hasTag()) return false;
         CompoundTag nbt = stack.getTag();
-        if (!nbt.contains("LightLevel")) return false;
+        if (!nbt.contains("DayTime")) return false;
 
-        LightLevelData data = getStringValueData(filter);
-        LightLevelCheck lightLevelCheck = data.getValue();
+        DayTimeData data = getStringValueData(filter);
+        DayTimeCheck dayTimeCheck = data.getValue();
 
-        int lightLevel = nbt.getInt("LightLevel");
+        int dayTime = nbt.getInt("DayTime");
 
         boolean result = true;
-        switch (lightLevelCheck.mode) {
-            case 1 -> result &= lightLevel >= lightLevelCheck.lightLevel;
-            case 2 -> result &= lightLevel <= lightLevelCheck.lightLevel;
-            case 3 -> result &= lightLevel > lightLevelCheck.lightLevel;
-            case 4 -> result &= lightLevel < lightLevelCheck.lightLevel;
-            case 0 -> result &= lightLevel == lightLevelCheck.lightLevel;
+        switch (dayTimeCheck.mode) {
+            case 1 -> result &= dayTime >= dayTimeCheck.dayTime;
+            case 2 -> result &= dayTime <= dayTimeCheck.dayTime;
+            case 3 -> result &= dayTime > dayTimeCheck.dayTime;
+            case 4 -> result &= dayTime < dayTimeCheck.dayTime;
+            case 0 -> result &= dayTime == dayTimeCheck.dayTime;
             default -> result = false;
         }
 
@@ -110,6 +107,6 @@ public class PhotoLightLevelFilterItem extends StringValueFilterItem {
 
     @Override
     public String getHelpKey() {
-        return "itemfilters.help_text.photo_light_level";
+        return "itemfilters.help_text.photo_day_time";
     }
 }

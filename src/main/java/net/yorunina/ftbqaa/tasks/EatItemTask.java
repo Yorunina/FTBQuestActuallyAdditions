@@ -36,7 +36,7 @@ public class EatItemTask extends Task {
     }
 
     public TaskType getType() {
-        return AATaskTypes.EAT_ITEM;
+        return TasksRegistry.EAT_ITEM;
     }
 
     public long getMaxProgress() {
@@ -45,13 +45,13 @@ public class EatItemTask extends Task {
 
     public void writeData(CompoundTag nbt) {
         super.writeData(nbt);
-        NBTUtils.write(nbt, "item", this.food);
+        NBTUtils.write(nbt, "items", this.food);
         nbt.putLong("count", this.count);
     }
 
     public void readData(CompoundTag nbt) {
         super.readData(nbt);
-        this.food = NBTUtils.read(nbt, "item");
+        this.food = NBTUtils.read(nbt, "items");
         this.count = Math.max(nbt.getLong("count"), 1L);
     }
 
@@ -70,7 +70,7 @@ public class EatItemTask extends Task {
     @OnlyIn(Dist.CLIENT)
     public void fillConfigGroup(ConfigGroup config) {
         super.fillConfigGroup(config);
-        config.addItemStack("item", this.food, (v) -> this.food = v, ItemStack.EMPTY, true, false).setNameKey("ftbquests.task.ftbquests.item");
+        config.addItemStack("items", this.food, (v) -> this.food = v, ItemStack.EMPTY, true, false).setNameKey("ftbquests.task.ftbquests.items");
         config.addLong("count", this.count, (v) -> this.count = v, 1L, 1L, Long.MAX_VALUE);
     }
 

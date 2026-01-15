@@ -1,4 +1,4 @@
-package net.yorunina.ftbqaa.item;
+package net.yorunina.ftbqaa.items;
 
 import dev.latvian.mods.itemfilters.item.StringValueData;
 import dev.latvian.mods.itemfilters.item.StringValueFilterItem;
