@@ -11,7 +11,6 @@ import net.yorunina.maa.tasks.TasksRegistry;
 
 @Mod(ModpackActuallyAdditions.MODID)
 public class ModpackActuallyAdditions {
-
     public static final String MODID = "maa";
     public ModpackActuallyAdditions(FMLJavaModLoadingContext context) {
         context.getModEventBus().addListener(this::preInit);
