@@ -6,7 +6,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.yorunina.maa.items.ItemFiltersItems;
-import net.yorunina.maa.registries.ProcessorRegister;
 import net.yorunina.maa.rewards.AARewardTypes;
 import net.yorunina.maa.tasks.TasksRegistry;
 
@@ -24,7 +23,6 @@ public class ModpackActuallyAdditions {
     private void preInit(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             TasksRegistry.getInstance().init();
-            ProcessorRegister.registerProcessors();
         });
     }
     public static ResourceLocation id(String name) {
