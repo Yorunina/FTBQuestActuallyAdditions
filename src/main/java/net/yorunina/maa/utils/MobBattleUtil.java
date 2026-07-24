@@ -11,10 +11,10 @@ import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.warden.AngerLevel;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 import net.minecraft.world.scores.Team;
@@ -26,7 +26,6 @@ public class MobBattleUtil {
     private static final UUID FOLLOW_MODIFIER_UUID = UUID.fromString("c856213f-f50d-46a0-a19e-5672ee2b4ae9");
     private static final String AI_ADDED_TAG = "maa_mobbattle_ai_added";
     private static final String FRIENDLY_TO_PLAYERS_TAG = "maa_friendly_to_players";
-    private static final Map<UUID, List<Goal>> SAVED_TARGET_GOALS = new HashMap<>();
 
 
     public static void setEntityFriendlyToPlayers(Mob entity) {
@@ -53,10 +52,9 @@ public class MobBattleUtil {
         entity.setNoAi(false);
     }
 
-    public static void addEntitiesToTeam(String teamName, Mob... entities) {
+    public static void addEntitiesToTeam(Level level, String teamName, Mob... entities) {
         if (entities == null || entities.length == 0) return;
-        if (entities[0].level().isClientSide) return;
-        Scoreboard scoreboard = entities[0].level().getScoreboard();
+        Scoreboard scoreboard = level.getScoreboard();
         PlayerTeam team = getOrCreateTeam(scoreboard, teamName);
         for (Mob entity : entities) {
             scoreboard.addPlayerToTeam(entity.getStringUUID(), team);
@@ -65,12 +63,11 @@ public class MobBattleUtil {
     }
 
     public static void setEntityAttackTarget(Mob attacker, LivingEntity target) {
-        if (attacker.level().isClientSide) return;
         setTargetTo(attacker, target);
         increaseFollowRange(attacker);
     }
 
-    public static void setTeamsHostile(String teamName1, String teamName2, ServerLevel level) {
+    public static void setTeamsHostile(ServerLevel level, String teamName1, String teamName2) {
         List<Mob> team1Mobs = getMobsOnTeam(level, teamName1);
         List<Mob> team2Mobs = getMobsOnTeam(level, teamName2);
         if (team1Mobs.isEmpty() || team2Mobs.isEmpty()) return;
@@ -88,7 +85,7 @@ public class MobBattleUtil {
     public static boolean isOnSameTeam(Entity entity1, Entity entity2) {
         Team team1 = entity1.getTeam();
         Team team2 = entity2.getTeam();
-        return team1 != null && team2 != null && team1 == team2;
+        return team1 != null && team1 == team2;
     }
 
     public static String getEntityTeamName(Entity entity) {
@@ -167,29 +164,14 @@ public class MobBattleUtil {
     }
 
 
-    @SuppressWarnings("unchecked")
     private static void updateEntityAI(Mob entity) {
         entity.setTarget(null);
         entity.addTag(AI_ADDED_TAG);
 
         GoalSelector targetSelector = entity.targetSelector;
 
-        if (!SAVED_TARGET_GOALS.containsKey(entity.getUUID())) {
-            List<Goal> saved = new ArrayList<>();
-            for (WrappedGoal wg : targetSelector.getAvailableGoals()) {
-                Goal g = wg.getGoal();
-                if ((g instanceof HurtByTargetGoal || g instanceof NearestAttackableTargetGoal)
-                        && !(g instanceof TeamHurtByTargetGoal) && !(g instanceof TeamNearestAttackableTargetGoal)) {
-                    saved.add(g);
-                }
-            }
-            SAVED_TARGET_GOALS.put(entity.getUUID(), saved);
-        }
-
         removeGoalsByClass(targetSelector, TeamHurtByTargetGoal.class);
         removeGoalsByClass(targetSelector, TeamNearestAttackableTargetGoal.class);
-        removeGoalsByClass(targetSelector, HurtByTargetGoal.class);
-        removeGoalsByClass(targetSelector, NearestAttackableTargetGoal.class);
 
         if (entity instanceof PathfinderMob pathfinder) {
             targetSelector.addGoal(1, new TeamHurtByTargetGoal(pathfinder));
@@ -206,27 +188,12 @@ public class MobBattleUtil {
         removeGoalsByClass(entity.targetSelector, TeamHurtByTargetGoal.class);
         removeGoalsByClass(entity.targetSelector, TeamNearestAttackableTargetGoal.class);
         removeFollowRangeModifier(entity);
-
-        List<Goal> saved = SAVED_TARGET_GOALS.remove(entity.getUUID());
-        if (saved != null && !saved.isEmpty()) {
-            for (Goal g : saved) {
-                if (g instanceof HurtByTargetGoal) {
-                    entity.targetSelector.addGoal(1, g);
-                } else {
-                    entity.targetSelector.addGoal(2, g);
-                }
-            }
-        } else {
-            if (entity instanceof PathfinderMob pathfinder) {
-                entity.targetSelector.addGoal(1, new HurtByTargetGoal(pathfinder));
-            }
-        }
     }
 
     private static void removeGoalsByClass(GoalSelector goalSelector, Class<? extends Goal> goalClass) {
         Set<Goal> toRemove = goalSelector.getAvailableGoals().stream()
-                .filter(w -> goalClass.isInstance(w.getGoal()))
                 .map(WrappedGoal::getGoal)
+                .filter(goalClass::isInstance)
                 .collect(Collectors.toSet());
         toRemove.forEach(goalSelector::removeGoal);
     }
@@ -234,12 +201,7 @@ public class MobBattleUtil {
     private static void increaseFollowRange(Mob mob) {
         AttributeInstance att = mob.getAttribute(Attributes.FOLLOW_RANGE);
         if (att != null && att.getModifier(FOLLOW_MODIFIER_UUID) == null) {
-            att.addTransientModifier(new AttributeModifier(
-                    FOLLOW_MODIFIER_UUID,
-                    "maa_mob_battle_follow",
-                    64,
-                    AttributeModifier.Operation.ADDITION
-            ));
+            att.addTransientModifier(new AttributeModifier(FOLLOW_MODIFIER_UUID, "maa_mob_battle_follow", 64, AttributeModifier.Operation.ADDITION));
         }
     }
 
@@ -252,23 +214,13 @@ public class MobBattleUtil {
 
     private static void clearAttackTarget(Mob entity) {
         entity.setTarget(null);
-        try {
-            entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-        } catch (Exception ignored) {
-        }
-        if (entity instanceof Warden warden) {
-            warden.setAttackTarget(null);
-        }
+        entity.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
     }
 
     private static void setTargetTo(Mob entity, LivingEntity target) {
         if (target == null) return;
         entity.setTarget(target);
-
-        try {
-            entity.getBrain().setMemoryWithExpiry(MemoryModuleType.ATTACK_TARGET, target, 600);
-        } catch (Exception ignored) {
-        }
+        entity.getBrain().setMemoryWithExpiry(MemoryModuleType.ATTACK_TARGET, target, 600);
 
         if (entity instanceof Warden warden) {
             warden.increaseAngerAt(target, AngerLevel.ANGRY.getMinimumAnger() + 20, false);
@@ -279,7 +231,6 @@ public class MobBattleUtil {
     private static boolean isValidBattleTarget(Mob mob, LivingEntity target) {
         if (target == mob) return false;
         if (isOnSameTeam(mob, target)) return false;
-        if (target instanceof ArmorStand) return false;
         if (target instanceof Player && isFriendlyToPlayers(mob)) return false;
         return true;
     }
@@ -301,8 +252,7 @@ public class MobBattleUtil {
 
     private static class TeamNearestAttackableTargetGoal<T extends LivingEntity> extends NearestAttackableTargetGoal<T> {
         public TeamNearestAttackableTargetGoal(Mob mob, Class<T> targetClass, boolean mustSee) {
-            super(mob, targetClass, 10, mustSee, false,
-                    target -> isValidBattleTarget(mob, target));
+            super(mob, targetClass, 10, mustSee, false, target -> isValidBattleTarget(mob, target));
         }
     }
 }

@@ -1,6 +1,6 @@
 package net.yorunina.maa.mixin;
 
-import com.alessandro.astages.api.AStagesUtils;
+import com.alessandro.astages.api.util.AStagesUtils;
 import com.alessandro.astages.api.holder.AHolder;
 import dev.ftb.mods.ftbquests.block.entity.StageBarrierBlockEntity;
 import net.minecraft.world.entity.player.Player;

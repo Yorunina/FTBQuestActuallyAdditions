@@ -1,7 +1,7 @@
 package net.yorunina.maa.rewards;
 
-import com.alessandro.astages.api.AStagesUtils;
 import com.alessandro.astages.api.holder.AHolder;
+import com.alessandro.astages.api.util.AStagesUtils;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.reward.Reward;
@@ -69,15 +69,15 @@ public class AStageReward extends Reward {
     public void claim(ServerPlayer player, boolean notify) {
         if (this.isServer) {
             if (this.remove) {
-                AStagesUtils.removeStage(AHolder.server(), this.stage, true);
+                AStagesUtils.removeStage(AHolder.server(), this.stage, false, false, false);
             } else {
-                AStagesUtils.addStage(AHolder.server(), this.stage, true);
+                AStagesUtils.addStage(AHolder.server(), this.stage, false, false, false);
             }
         } else {
             if (this.remove) {
-                AStagesUtils.removeStage(AHolder.player(player), this.stage, true);
+                AStagesUtils.removeStage(AHolder.player(player), this.stage, false, false, false);
             } else {
-                AStagesUtils.addStage(AHolder.player(player), this.stage, true);
+                AStagesUtils.addStage(AHolder.player(player), this.stage, false, false, false);
             }
         }
 

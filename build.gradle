@@ -122,7 +122,6 @@ dependencies {
 
     implementation fg.deobf("maven.modrinth:keybind-atlas:1.3.1")
 
-    implementation fg.deobf("curse.maven:astages-1120180:7204574")
     implementation fg.deobf("curse.maven:exposure-871755:7667015")
     implementation fg.deobf("curse.maven:waystones-forge-245755:6856603")
 
@@ -148,9 +147,12 @@ dependencies {
     implementation fg.deobf("curse.maven:apothic-attributes-898963:5634071")
     implementation fg.deobf("curse.maven:bossesrise-1314084:8123166")
     implementation fg.deobf("curse.maven:irons-spells-n-spellbooks-855414:8364933")
+    implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:7963208")
 
     implementation fg.deobf("blank:chestcavity-1.20.1:2.16.7")
     implementation fg.deobf("blank:GeoTetraArmor-1.20.1:1.0.4")
+    implementation fg.deobf("blank:astages-1.20.1:2.4.0")
+    implementation fg.deobf("blank:biomancy-1.20.1:2.9.0.1")
 
     compileOnly(fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}"))

@@ -1,8 +1,8 @@
 package net.yorunina.maa.tasks;
 
-import com.alessandro.astages.api.AStagesUtils;
 import com.alessandro.astages.api.holder.AHolder;
-import com.alessandro.astages.capability.ServerStage;
+import com.alessandro.astages.api.util.AStagesUtils;
+import com.alessandro.astages.infrastructure.capability.ServerStage;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.TeamData;

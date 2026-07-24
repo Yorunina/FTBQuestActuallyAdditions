@@ -1,7 +1,6 @@
 package net.yorunina.maa.compat.kubejs;
 
 
-import com.agricraft.agricraft.common.block.entity.CropBlockEntity;
 import com.github.L_Ender.cataclysm.capabilities.TidalTentacleCapability;
 import com.github.L_Ender.cataclysm.entity.projectile.Tidal_Tentacle_Entity;
 import com.github.L_Ender.cataclysm.entity.util.TidalTentacleUtil;
@@ -16,6 +15,9 @@ import dev.ftb.mods.ftbquests.quest.task.Task;
 import dev.ftb.mods.ftbquests.util.ProgressChange;
 
 import net.createmod.catnip.math.VecHelper;
+import net.mehvahdjukaar.dummmmmmy.common.CritRecord;
+import net.mehvahdjukaar.dummmmmmy.network.ClientBoundDamageNumberMessage;
+import net.mehvahdjukaar.dummmmmmy.network.NetworkHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -27,6 +29,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -54,7 +57,6 @@ import net.yorunina.maa.tasks.TasksRegistry;
 import net.yorunina.maa.utils.BiomeSearcher;
 import net.yorunina.maa.utils.VeinSearcher;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -254,21 +256,6 @@ public class MAAUtils {
         level.getChunkSource().chunkMap.resendBiomesForChunks(affectedChunks);
     }
 
-    public String toRomanNumeral(double number) {
-        int value = (int) number;
-        if (value <= 0) return "";
-        int[] values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
-        String[] symbols = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < values.length; i++) {
-            while (value >= values[i]) {
-                value -= values[i];
-                sb.append(symbols[i]);
-            }
-        }
-        return sb.toString();
-    }
-
     @SuppressWarnings("unchecked")
     private void setBiomeInSection(LevelChunkSection section, int x, int y, int z, Holder<Biome> biomeHolder) {
         PalettedContainerRO<Holder<Biome>> biomes = section.getBiomes();
@@ -304,7 +291,7 @@ public class MAAUtils {
         if (tentacleCapability != null && TidalTentacleUtil.canLaunchTentacles(worldIn, playerIn)) {
             TidalTentacleUtil.retractFarTentacles(worldIn, playerIn);
             if (!worldIn.isClientSide && closestValid != null) {
-                Tidal_Tentacle_Entity segment = (Tidal_Tentacle_Entity)((EntityType) ModEntities.TIDAL_TENTACLE.get()).create(worldIn);
+                Tidal_Tentacle_Entity segment = (Tidal_Tentacle_Entity) ((EntityType) ModEntities.TIDAL_TENTACLE.get()).create(worldIn);
                 segment.copyPosition(playerIn);
                 worldIn.addFreshEntity(segment);
                 segment.setCreatorEntityUUID(playerIn.getUUID());
@@ -317,5 +304,9 @@ public class MAAUtils {
             }
         }
         return false;
+    }
+
+    public void spawnDamageNumber(ServerPlayer player, LivingEntity target, DamageSource source, float amount, CritRecord critRecord) {
+        NetworkHandler.CHANNEL.sendToClientPlayer(player, new ClientBoundDamageNumberMessage(target, amount, source, critRecord));
     }
 }

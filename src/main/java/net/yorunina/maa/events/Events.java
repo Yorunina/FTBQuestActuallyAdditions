@@ -1,6 +1,6 @@
 package net.yorunina.maa.events;
 
-import com.alessandro.astages.event.custom.LivingEntityEatEvent;
+import com.alessandro.astages.api.event.world.LivingEntityEatEvent;
 import com.tom.createores.block.DrillBlock;
 import com.tom.createores.block.ExtractorBlock;
 import com.tom.createores.block.entity.DrillBlockEntity;
