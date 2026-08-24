@@ -92,5 +92,6 @@
   "stat.maa.excavate_times": "虚拟矿脉采掘次数",
   "stat.maa.crops_planted": "作物架种植次数",
   "maa.jei.category.agri_soil": "AgriCraft 土壤信息",
-  "maa.jei.agri_soil.growth_modifier": "生长修正: %s"
+  "maa.jei.agri_soil.growth_modifier": "生长修正: %s",
+  "attribute.name.maa.loot_multiplier": "战利品倍率"
 }

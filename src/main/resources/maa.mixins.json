@@ -56,6 +56,7 @@
     "MixinToolbeltContainer",
     "MixinVillager",
     "MixinVineryStorageBlockEntity",
+    "MixinTeleportFromMapPacket",
     "accessor.DrinkBlockItemAccessor",
     "accessor.FluidTunnelInstanceAccessor",
     "accessor.ItemTraderBlockEntityAccessor",
@@ -71,6 +72,8 @@
     "MixinClientQuestFile",
     "MixinScreenEffectRenderer",
     "MixinWindow",
+    "MixinWaypointMapIcon",
+    "MixinWaypointEditorScreenRowPanel",
     "structure.MixinStructureBlockRenderer"
   ],
   "injectors": {

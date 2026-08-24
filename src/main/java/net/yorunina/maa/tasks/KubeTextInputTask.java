@@ -3,6 +3,7 @@ package net.yorunina.maa.tasks;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.config.StringConfig;
 import dev.ftb.mods.ftblibrary.ui.Button;
+import dev.ftb.mods.ftbquests.client.ClientQuestFile;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.quest.task.TaskType;
 import dev.ftb.mods.ftbquests.util.TextUtils;
@@ -29,6 +30,9 @@ public class KubeTextInputTask extends KubeTask {
 
     @OnlyIn(Dist.CLIENT)
     public void onButtonClicked(Button button, boolean canClick) {
+        if (ClientQuestFile.INSTANCE != null && ClientQuestFile.INSTANCE.selfTeamData != null && ClientQuestFile.INSTANCE.selfTeamData.isCompleted(this)) {
+            return;
+        }
         button.playClickSound();
 
         StringConfig c = new StringConfig(null);

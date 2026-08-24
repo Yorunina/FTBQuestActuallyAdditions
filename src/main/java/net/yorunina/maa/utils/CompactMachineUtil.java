@@ -1,19 +1,37 @@
 package net.yorunina.maa.utils;
 
 import dev.compactmods.machines.api.dimension.CompactDimension;
+import dev.compactmods.machines.api.location.IDimensionalPosition;
+import dev.compactmods.machines.api.room.IRoomHistory;
+import dev.compactmods.machines.api.room.RoomSize;
 import dev.compactmods.machines.api.tunnels.capability.CapabilityTunnel;
+import dev.compactmods.machines.dimension.MissingDimensionException;
+import dev.compactmods.machines.location.LevelBlockPosition;
+import dev.compactmods.machines.location.PreciseDimensionalPosition;
+import dev.compactmods.machines.location.SimpleTeleporter;
 import dev.compactmods.machines.machine.CompactMachineItem;
+import dev.compactmods.machines.room.RoomCapabilities;
+import dev.compactmods.machines.room.Rooms;
+import dev.compactmods.machines.room.data.CompactRoomData;
+import dev.compactmods.machines.room.exceptions.NonexistentRoomException;
+import dev.compactmods.machines.room.history.PlayerRoomHistoryItem;
 import dev.compactmods.machines.tunnel.TunnelWallEntity;
 import dev.compactmods.machines.tunnel.Tunnels;
 import dev.compactmods.machines.tunnel.definitions.FluidTunnel;
 import dev.compactmods.machines.tunnel.definitions.ItemTunnel;
 import dev.compactmods.machines.tunnel.graph.TunnelConnectionGraph;
+import dev.compactmods.machines.util.PlayerUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -41,14 +59,16 @@ public class CompactMachineUtil {
         return getCompactDimension(server).map(compactDim -> TunnelConnectionGraph.forRoom(compactDim, room));
     }
 
+    public static Optional<CompactRoomData.RoomData> getRoomData(MinecraftServer server, ChunkPos room) {
+        return getCompactDimension(server).flatMap(compactDim -> CompactRoomData.get(compactDim).forRoom(room));
+    }
+
     public static Optional<ItemTunnel.Instance> getItemTunnelInstance(MinecraftServer server, ChunkPos room, Direction side) {
-        return findTunnelEntityByRoom(server, room, side, ForgeCapabilities.ITEM_HANDLER)
-                .map(TunnelWallEntity::getTunnel);
+        return findTunnelEntityByRoom(server, room, side, ForgeCapabilities.ITEM_HANDLER).map(TunnelWallEntity::getTunnel);
     }
 
     public static Optional<FluidTunnel.Instance> getFluidTunnelInstance(MinecraftServer server, ChunkPos room, Direction side) {
-        return findTunnelEntityByRoom(server, room, side, ForgeCapabilities.FLUID_HANDLER)
-                .map(TunnelWallEntity::getTunnel);
+        return findTunnelEntityByRoom(server, room, side, ForgeCapabilities.FLUID_HANDLER).map(TunnelWallEntity::getTunnel);
     }
 
     public static LazyOptional<IItemHandler> getItemHandler(MinecraftServer server, ChunkPos room, Direction side) {
@@ -193,42 +213,36 @@ public class CompactMachineUtil {
         return result;
     }
 
-    public static void forEachItemTunnel(MinecraftServer server, ChunkPos room, Consumer<ItemTunnelInfo> consumer) {
-        var compactDimOpt = getCompactDimension(server);
-        if (compactDimOpt.isEmpty()) return;
-        final var compactDim = compactDimOpt.get();
+    public static boolean teleportPlayerIntoRoom(MinecraftServer server, ServerPlayer player, ChunkPos room, boolean recordHistory) {
+        if (!Rooms.exists(server, room)) return false;
 
-        final var graph = TunnelConnectionGraph.forRoom(compactDim, room);
-        graph.tunnels().forEach(info -> {
-            if (compactDim.getBlockEntity(info.location()) instanceof TunnelWallEntity twe) {
-                ItemTunnel.Instance inst = twe.getTunnel();
-                if (inst != null) {
-                    consumer.accept(new ItemTunnelInfo(
-                            info.side(), info.location(), ((ItemTunnelInstanceAccessor)inst).getHandler()
-                    ));
-                }
+        if (player.level().dimension().equals(CompactDimension.LEVEL_KEY) && player.chunkPosition().equals(room)) {
+            return false;
+        }
+
+        final var entry = PreciseDimensionalPosition.fromPlayer(player);
+        final var machinePos = new LevelBlockPosition(player.level().dimension(), player.blockPosition());
+
+        try {
+            PlayerUtil.teleportPlayerIntoRoom(server, player, room, false);
+
+            if (recordHistory) {
+                player.getCapability(RoomCapabilities.ROOM_HISTORY).ifPresent(hist -> hist.addHistory(new PlayerRoomHistoryItem(entry, machinePos))
+                );
             }
-        });
+            return true;
+        } catch (MissingDimensionException | NonexistentRoomException e) {
+            return false;
+        }
     }
 
-    public static void forEachFluidTunnel(MinecraftServer server, ChunkPos room, Consumer<FluidTunnelInfo> consumer) {
-        var compactDimOpt = getCompactDimension(server);
-        if (compactDimOpt.isEmpty()) return;
-        final var compactDim = compactDimOpt.get();
+    public static boolean teleportPlayerBack(ServerLevel level, ServerPlayer player) {
+        final var history = player.getCapability(RoomCapabilities.ROOM_HISTORY);
+        boolean hadHistory = history.map(IRoomHistory::hasHistory).orElse(false);
 
-        final var graph = TunnelConnectionGraph.forRoom(compactDim, room);
-        graph.tunnels().forEach(info -> {
-            if (compactDim.getBlockEntity(info.location()) instanceof TunnelWallEntity twe) {
-                FluidTunnel.Instance inst = twe.getTunnel();
-                if (inst != null) {
-                    consumer.accept(new FluidTunnelInfo(
-                            info.side(), info.location(), ((FluidTunnelInstanceAccessor)inst).getHandler()
-                    ));
-                }
-            }
-        });
+        PlayerUtil.teleportPlayerOutOfMachine(level, player);
+        return hadHistory;
     }
-
 
     private static Optional<TunnelWallEntity> findTunnelEntityByRoom(MinecraftServer server, ChunkPos room, Direction side, Capability<?> cap) {
         final var compactDim = server.getLevel(CompactDimension.LEVEL_KEY);
@@ -251,67 +265,5 @@ public class CompactMachineUtil {
         }
         return result;
     }
-
-    public static final class ItemTunnelInfo {
-        private final Direction connectedSide;
-        private final BlockPos tunnelPosition;
-        private final ItemStackHandler handler;
-
-        ItemTunnelInfo(Direction connectedSide, BlockPos tunnelPosition, ItemStackHandler handler) {
-            this.connectedSide = connectedSide;
-            this.tunnelPosition = tunnelPosition;
-            this.handler = handler;
-        }
-
-        public Direction connectedSide() { return connectedSide; }
-        public BlockPos tunnelPosition() { return tunnelPosition; }
-        public ItemStackHandler handler() { return handler; }
-
-        public int slotCount() { return handler.getSlots(); }
-
-        public List<ItemStack> getAllItems() {
-            List<ItemStack> items = new ArrayList<>();
-            for (int i = 0; i < handler.getSlots(); i++) {
-                ItemStack stack = handler.getStackInSlot(i);
-                if (!stack.isEmpty()) items.add(stack.copy());
-            }
-            return items;
-        }
-
-        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            return handler.insertItem(slot, stack, simulate);
-        }
-
-        public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return handler.extractItem(slot, amount, simulate);
-        }
-    }
-
-    public record FluidTunnelInfo(Direction connectedSide, BlockPos tunnelPosition, FluidTank handler) {
-
-        public FluidStack getFluid() {
-            return handler.getFluid();
-        }
-
-        public int getFluidAmount() {
-            return handler.getFluidAmount();
-        }
-
-        public int getCapacity() {
-            return handler.getCapacity();
-        }
-
-            public int fill(FluidStack resource, IFluidHandler.FluidAction action) {
-                return handler.fill(resource, action);
-            }
-
-            public FluidStack drain(int maxDrain, IFluidHandler.FluidAction action) {
-                return handler.drain(maxDrain, action);
-            }
-
-            public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) {
-                return handler.drain(resource, action);
-            }
-        }
 
 }

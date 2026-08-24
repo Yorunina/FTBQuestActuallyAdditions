@@ -94,5 +94,6 @@
   "stat.maa.excavate_times": "Excavate Times",
   "stat.maa.crops_planted": "Crops Planted on Crop Sticks",
   "maa.jei.category.agri_soil": "AgriCraft Soil Information",
-  "maa.jei.agri_soil.growth_modifier": "Growth Modifier: %s"
+  "maa.jei.agri_soil.growth_modifier": "Growth Modifier: %s",
+  "attribute.name.maa.loot_multiplier": "Loot Multiplier"
 }

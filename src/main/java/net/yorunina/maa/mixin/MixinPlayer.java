@@ -13,12 +13,25 @@ public abstract class MixinPlayer implements IPlayer {
     private boolean keepInventory = false;
 
     @Unique
+    private boolean mapTeleportBypass = false;
+
+    @Unique
     public boolean shouldKeepInventory() {
         return keepInventory;
     }
 
     public void setKeepInventory(boolean keepInventory) {
         this.keepInventory = keepInventory;
+    }
+
+    @Override
+    public boolean canMapTeleport() {
+        return mapTeleportBypass;
+    }
+
+    @Override
+    public void setMapTeleportBypass(boolean bypass) {
+        this.mapTeleportBypass = bypass;
     }
 
     @ModifyExpressionValue(method = "dropEquipment", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/GameRules;getBoolean(Lnet/minecraft/world/level/GameRules$Key;)Z"))

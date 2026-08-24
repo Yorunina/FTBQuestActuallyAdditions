@@ -12,13 +12,27 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class VeinSearcher {
-    private static final ExecutorService EXECUTORS = Executors.newFixedThreadPool(4);
+    private static volatile ExecutorService EXECUTORS = Executors.newFixedThreadPool(4);
     private static final Set<UUID> CANCELLED = ConcurrentHashMap.newKeySet();
     private static volatile boolean shutdown = false;
+
+    private static ExecutorService getExecutor() {
+        if (EXECUTORS.isShutdown() || EXECUTORS.isTerminated()) {
+            synchronized (VeinSearcher.class) {
+                if (EXECUTORS.isShutdown() || EXECUTORS.isTerminated()) {
+                    EXECUTORS = Executors.newFixedThreadPool(4);
+                    shutdown = false;
+                    CANCELLED.clear();
+                }
+            }
+        }
+        return EXECUTORS;
+    }
 
     public static void shutdown() {
         shutdown = true;
@@ -50,27 +64,38 @@ public class VeinSearcher {
             return null;
         }
 
+        if (shutdown) {
+            callback.accept(null);
+            return null;
+        }
+
         UUID searchId = UUID.randomUUID();
 
-        EXECUTORS.submit(() -> {
-            if (shutdown) {
-                callback.accept(null);
-                return;
-            }
-
-            try {
-                BlockPos result = searchIterative(level, targetVein, center, maxRadius, searchId);
-                if (isCancelled(searchId)) {
+        try {
+            getExecutor().submit(() -> {
+                if (shutdown) {
                     callback.accept(null);
                     return;
                 }
-                callback.accept(result);
-            } catch (Exception e) {
-                callback.accept(null);
-            } finally {
-                CANCELLED.remove(searchId);
-            }
-        });
+
+                try {
+                    BlockPos result = searchIterative(level, targetVein, center, maxRadius, searchId);
+                    if (isCancelled(searchId)) {
+                        callback.accept(null);
+                        return;
+                    }
+                    callback.accept(result);
+                } catch (Exception e) {
+                    callback.accept(null);
+                } finally {
+                    CANCELLED.remove(searchId);
+                }
+            });
+        } catch (RejectedExecutionException e) {
+            CANCELLED.remove(searchId);
+            callback.accept(null);
+            return null;
+        }
 
         return searchId;
     }

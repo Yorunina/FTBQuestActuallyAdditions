@@ -50,5 +50,8 @@ public abstract class MixinServerPlayer extends Player {
     private void restoreFromInject(ServerPlayer p_9016_, boolean p_9017_, CallbackInfo ci) {
         IFoodData foodData = (IFoodData) this.getFoodData();
         ((IFoodData) this.foodData).setNoAddExhaustion(foodData.getNoAddExhaustion());
+        IPlayer iPlayer = (IPlayer) p_9016_;
+        ((IPlayer) this).setKeepInventory(iPlayer.shouldKeepInventory());
+        ((IPlayer) this).setMapTeleportBypass(iPlayer.canMapTeleport());
     }
 }

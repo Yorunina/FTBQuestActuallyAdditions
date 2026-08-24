@@ -1,9 +1,6 @@
 package net.yorunina.maa.mixin;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftblibrary.icon.IconAnimation;
@@ -12,7 +9,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import javax.json.Json;
 import java.util.List;
 
 @Mixin(Icon.class)

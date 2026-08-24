@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Mixin(IconAnimation.class)
