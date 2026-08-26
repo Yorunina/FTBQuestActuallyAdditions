@@ -128,7 +128,6 @@ dependencies {
     implementation(fg.deobf("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") { transitive = false })
     implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))
     implementation fg.deobf("curse.maven:create-ore-excavation-649832:7152704")
-    implementation fg.deobf("curse.maven:arcane-convergence-1380925:7199085")
     implementation fg.deobf("curse.maven:vanillabackport-417430:8229712")
 
     implementation fg.deobf("curse.maven:cataclysm-forge-551586:7867528")

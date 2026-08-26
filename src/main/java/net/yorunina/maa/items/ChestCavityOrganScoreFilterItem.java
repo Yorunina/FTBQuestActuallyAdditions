@@ -64,9 +64,8 @@ public class ChestCavityOrganScoreFilterItem extends StringValueFilterItem {
     public boolean filter(ItemStack filter, ItemStack stack) {
         if (stack.isEmpty()) return false;
 
-
+        // todo 未来架构重构中的变动点，需注意
         OrganData organData = ChestCavityUtil.lookupOrgan(stack, null);
-        if (organData == null) return false;
         OrganScoreData data = getStringValueData(filter);
 
         if (data.getValue() == null || data.getValue().organScore == null) {
