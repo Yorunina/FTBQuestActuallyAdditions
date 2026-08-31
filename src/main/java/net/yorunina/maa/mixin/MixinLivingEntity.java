@@ -5,6 +5,8 @@ import net.yorunina.maa.model.ILivingEntityNumberPos;
 import net.yorunina.maa.model.ILivingEntityWearingGold;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity implements ILivingEntityWearingGold, ILivingEntityNumberPos {
@@ -27,5 +29,10 @@ public abstract class MixinLivingEntity implements ILivingEntityWearingGold, ILi
     @Unique
     public int getNextNumberPos() {
         return damageNumberPos++;
+    }
+
+    @ModifyConstant(method = "hurt", constant = @Constant(intValue = 100), require=0)
+    public int lastHurtTimer(int constant) {
+        return 1200;
     }
 }

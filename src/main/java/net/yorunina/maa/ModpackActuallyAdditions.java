@@ -10,8 +10,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.yorunina.maa.client.entities.ClientRenderRegistry;
-import net.yorunina.maa.entities.MAAEntityRegistry;
 import net.yorunina.maa.items.RegistryItems;
 import net.yorunina.maa.networks.MAAQuestNetHandler;
 import net.yorunina.maa.registry.MAAGameRules;
@@ -38,7 +36,6 @@ public class ModpackActuallyAdditions {
         if (FMLEnvironment.dist == Dist.CLIENT) modEventBus.addListener(this::clientInit);
         AARewardTypes.init();
         RegistryItems.register(modEventBus);
-        MAAEntityRegistry.Defer.register(modEventBus);
     }
 
     private void commonInit(FMLCommonSetupEvent event) {
@@ -52,7 +49,6 @@ public class ModpackActuallyAdditions {
 
     private void clientInit(FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
-        ClientRenderRegistry.init();
     }
 
     public static ResourceLocation id(String name) {

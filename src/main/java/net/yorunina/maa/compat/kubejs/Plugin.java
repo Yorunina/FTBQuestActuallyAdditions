@@ -11,8 +11,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.unusual.block_factorys_bosses.capability.entity.RollCap;
 import net.yorunina.maa.client.RenderHelper;
 import net.yorunina.maa.client.vfx.PunchVFXManager;
-import net.yorunina.maa.entities.AoeArrowEntity;
-import net.yorunina.maa.entities.SeekingArrowEntity;
 import net.yorunina.maa.registry.MAAStats;
 import net.yorunina.maa.utils.CompactMachineUtil;
 import net.yorunina.maa.utils.MobBattleUtil;
@@ -32,8 +30,6 @@ public class Plugin extends KubeJSPlugin {
         event.add("MAAUtils", MAAUtils.INSTANCE);
         event.add("FluidAndItemCraftResult", FluidAndItemCraftResult.class);
         event.add("ClickAction", ClickAction.class);
-        event.add("SeekingArrowEntity", SeekingArrowEntity.class);
-        event.add("AoeArrowEntity", AoeArrowEntity.class);
         event.add("TeamData", TeamData.class);
         event.add("QuestFile", QuestFile.class);
         event.add("Comparator", Comparator.class);

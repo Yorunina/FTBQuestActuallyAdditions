@@ -16,20 +16,24 @@ public abstract class MixinPlayer implements IPlayer {
     private boolean mapTeleportBypass = false;
 
     @Unique
+    private boolean alwaysFly = false;
+
+    @Unique
     public boolean shouldKeepInventory() {
         return keepInventory;
     }
 
+    @Unique
     public void setKeepInventory(boolean keepInventory) {
         this.keepInventory = keepInventory;
     }
 
-    @Override
+    @Unique
     public boolean canMapTeleport() {
         return mapTeleportBypass;
     }
 
-    @Override
+    @Unique
     public void setMapTeleportBypass(boolean bypass) {
         this.mapTeleportBypass = bypass;
     }

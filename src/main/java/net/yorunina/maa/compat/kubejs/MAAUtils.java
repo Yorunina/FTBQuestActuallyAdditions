@@ -309,4 +309,9 @@ public class MAAUtils {
     public void spawnDamageNumber(ServerPlayer player, LivingEntity target, DamageSource source, float amount, CritRecord critRecord) {
         NetworkHandler.CHANNEL.sendToClientPlayer(player, new ClientBoundDamageNumberMessage(target, amount, source, critRecord));
     }
+
+    public Entity getEntityById(Level level, int entityId) {
+        return level.getEntity(entityId);
+    }
+
 }

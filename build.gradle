@@ -141,6 +141,10 @@ dependencies {
     implementation fg.deobf("curse.maven:async-locator-625069:4603343")
     implementation fg.deobf("curse.maven:geckolib-388172:6920925")
     implementation fg.deobf("curse.maven:compact-machines-224218:6000230")
+    // Compact Machines embeds Gander's rendering library in its jarJar output.
+    // Keep the embedded API available to the Mixin annotation processor without
+    // bundling a second copy into MAA.
+    compileOnly files("../CompactMachines/libs/rendering-0.1.9.jar")
     implementation fg.deobf("curse.maven:agricraft-225635:7257465")
     implementation fg.deobf("curse.maven:potion-core-reborn-632027:6373731")
     implementation fg.deobf("curse.maven:apothic-attributes-898963:5634071")

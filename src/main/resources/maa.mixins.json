@@ -51,12 +51,12 @@
     "MixinSkinLibrary",
     "MixinStageBarrierBlockEntity",
     "MixinTeamData",
+    "MixinTeleportFromMapPacket",
     "MixinThemeLoader",
     "MixinToolbeltContainer",
     "MixinVillager",
     "MixinVineryStorageBlockEntity",
     "MixinYetiEntity",
-    "MixinTeleportFromMapPacket",
     "accessor.DrinkBlockItemAccessor",
     "accessor.FluidTunnelInstanceAccessor",
     "accessor.ItemTraderBlockEntityAccessor",
@@ -70,10 +70,11 @@
   ],
   "client": [
     "MixinClientQuestFile",
+    "MixinGanderRenderTypeStore",
     "MixinScreenEffectRenderer",
-    "MixinWindow",
-    "MixinWaypointMapIcon",
     "MixinWaypointEditorScreenRowPanel",
+    "MixinWaypointMapIcon",
+    "MixinWindow",
     "structure.MixinStructureBlockRenderer"
   ],
   "injectors": {

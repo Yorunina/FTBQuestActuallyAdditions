@@ -3,10 +3,16 @@ package net.yorunina.maa.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.authlib.GameProfile;
+import dev.shadowsoffire.attributeslib.api.ALObjects;
+import dev.shadowsoffire.attributeslib.impl.AttributeEvents;
+import dev.shadowsoffire.attributeslib.util.IEntityOwned;
+import dev.shadowsoffire.attributeslib.util.IFlying;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.yorunina.maa.model.IFoodData;
 import net.yorunina.maa.model.IPlayer;
@@ -20,6 +26,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinServerPlayer extends Player {
     @Shadow
     public abstract void stopRiding();
+
+    @Shadow
+    public abstract void onUpdateAbilities();
 
     public MixinServerPlayer(Level world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super(world, pos, yaw, gameProfile);
@@ -46,11 +55,11 @@ public abstract class MixinServerPlayer extends Player {
         return bool || ((IPlayer) serverPlayer).shouldKeepInventory();
     }
 
-    @Inject(method = "restoreFrom", at = @At(value = "HEAD"))
-    private void restoreFromInject(ServerPlayer p_9016_, boolean p_9017_, CallbackInfo ci) {
-        IFoodData foodData = (IFoodData) this.getFoodData();
+    @Inject(method = "restoreFrom", at = @At(value = "TAIL"))
+    private void restoreFromInject(ServerPlayer oldPlayer, boolean alive, CallbackInfo ci) {
+        IFoodData foodData = (IFoodData) oldPlayer.getFoodData();
         ((IFoodData) this.foodData).setNoAddExhaustion(foodData.getNoAddExhaustion());
-        IPlayer iPlayer = (IPlayer) p_9016_;
+        IPlayer iPlayer = (IPlayer) oldPlayer;
         ((IPlayer) this).setKeepInventory(iPlayer.shouldKeepInventory());
         ((IPlayer) this).setMapTeleportBypass(iPlayer.canMapTeleport());
     }
