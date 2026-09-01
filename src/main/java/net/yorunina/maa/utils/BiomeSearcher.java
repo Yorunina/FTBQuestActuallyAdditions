@@ -22,6 +22,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class BiomeSearcher {
+    private static final int SEARCH_STEP = 64;
+    private static final int HEIGHT_STEP = 64;
+    private static final int CENTER_STEP = 8;
+    private static final int CANCELLATION_CHECK_INTERVAL = 64;
+    private static final int MAX_VERTICAL_UP = 32;
+    private static final int MAX_VERTICAL_DOWN = 64;
+    private static final int MAX_HORIZONTAL_DISTANCE = 800;
+
     private static volatile ExecutorService EXECUTORS = Executors.newFixedThreadPool(4);
     private static final Set<UUID> CANCELLED = ConcurrentHashMap.newKeySet();
     private static volatile boolean shutdown = false;
@@ -85,17 +93,13 @@ public class BiomeSearcher {
 
                 try {
                     BlockPos result = searchIterative(level, target, center, maxRadius, searchId);
-                    if (isCancelled(searchId)) {
+                    if (result == null || isCancelled(searchId)) {
                         callback.accept(null);
                         return;
                     }
-                    if (result != null && !result.equals(BlockPos.ZERO)) {
-                        BlockPos centerPos = calculateBiomeCenter(level, result, target, searchId);
-                        if (!isCancelled(searchId)) {
-                            callback.accept(centerPos);
-                        } else {
-                            callback.accept(null);
-                        }
+                    BlockPos centerPos = calculateBiomeCenter(level, result, target, searchId);
+                    if (!isCancelled(searchId)) {
+                        callback.accept(centerPos);
                     } else {
                         callback.accept(null);
                     }
@@ -123,31 +127,51 @@ public class BiomeSearcher {
         ServerChunkCache cache = level.getChunkSource();
         BiomeSource source = cache.getGenerator().getBiomeSource();
         Climate.Sampler sampler = cache.randomState().sampler();
+        if (source.possibleBiomes().stream().noneMatch(holder -> holder.is(targetBiome))) {
+            return null;
+        }
+
         int minBuildHeight = level.getMinBuildHeight() + 1;
         int maxBuildHeight = level.getMaxBuildHeight();
+        int[] searchedHeights = Mth.outFromOrigin(y, minBuildHeight, maxBuildHeight, HEIGHT_STEP).toArray();
+        int[] searchedQuartYs = new int[searchedHeights.length];
+        for (int i = 0; i < searchedHeights.length; i++) {
+            searchedQuartYs[i] = QuartPos.fromBlock(searchedHeights[i]);
+        }
 
-        int step = 64;
-        int x = centerX;
-        int z = centerZ;
-        int dx = step;
+        long x = centerX;
+        long z = centerZ;
+        int dx = SEARCH_STEP;
         int dz = 0;
         int segmentLength = 1;
         int segmentPassed = 0;
-        int checkInterval = 100;
+        long radiusSquared = (long) maxRadius * maxRadius;
 
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            if (i % checkInterval == 0 && (isCancelled(searchId) || shutdown)) {
-                return BlockPos.ZERO;
+        for (int samples = 0; ; samples++) {
+            if ((samples & (CANCELLATION_CHECK_INTERVAL - 1)) == 0
+                    && (isCancelled(searchId) || shutdown)) {
+                return null;
             }
 
-            int distance = (int) Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(z - centerZ, 2));
-            if (distance > maxRadius) {
-                return BlockPos.ZERO;
+            long deltaX = x - centerX;
+            long deltaZ = z - centerZ;
+            if (x < Integer.MIN_VALUE || x > Integer.MAX_VALUE
+                    || z < Integer.MIN_VALUE || z > Integer.MAX_VALUE) {
+                return null;
             }
 
-            BlockPos foundPos = checkBiomeAt(source, sampler, targetBiome, x, y, z, minBuildHeight, maxBuildHeight);
-            if (foundPos != null) {
-                return foundPos;
+            long distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
+            if (distanceSquared <= radiusSquared) {
+                BlockPos foundPos = checkBiomeAt(source, sampler, targetBiome,
+                        (int) x, (int) z, searchedHeights, searchedQuartYs);
+                if (foundPos != null) {
+                    return foundPos;
+                }
+            } else if (Math.max(Math.abs(deltaX), Math.abs(deltaZ)) > maxRadius) {
+                // The spiral can temporarily leave the circle and enter it
+                // again (for example, (64, 64) followed by (0, 64)). Only
+                // stop once the whole next square ring is outside the radius.
+                return null;
             }
 
             x += dx;
@@ -165,20 +189,18 @@ public class BiomeSearcher {
                 }
             }
         }
-
-        return BlockPos.ZERO;
     }
 
-    private BlockPos checkBiomeAt(BiomeSource source, Climate.Sampler sampler, ResourceLocation targetBiome, int x, int y, int z, int minBuildHeight, int maxBuildHeight) {
-        int[] searchedHeights = Mth.outFromOrigin(y, minBuildHeight, maxBuildHeight, 64).toArray();
+    private BlockPos checkBiomeAt(BiomeSource source, Climate.Sampler sampler,
+                                  ResourceLocation targetBiome, int x, int z,
+                                  int[] searchedHeights, int[] searchedQuartYs) {
         int quartX = QuartPos.fromBlock(x);
         int quartZ = QuartPos.fromBlock(z);
 
-        for (int testY : searchedHeights) {
-            int quartY = QuartPos.fromBlock(testY);
-            Holder<Biome> holder = source.getNoiseBiome(quartX, quartY, quartZ, sampler);
+        for (int i = 0; i < searchedHeights.length; i++) {
+            Holder<Biome> holder = source.getNoiseBiome(quartX, searchedQuartYs[i], quartZ, sampler);
             if (holder.is(targetBiome)) {
-                return new BlockPos(x, testY, z);
+                return new BlockPos(x, searchedHeights[i], z);
             }
         }
         return null;
@@ -196,37 +218,48 @@ public class BiomeSearcher {
         int biomeUp = 0;
         int biomeDown = 0;
         
-        while (biomeUp < 32 && !isCancelled(searchId) && getNoiseBiomeAtPos(source, biomeCorner.above(biomeUp), sampler).is(biome)) {
-            biomeUp += 8;
+        while (biomeUp < MAX_VERTICAL_UP && !isCancelled(searchId)
+                && isBiomeAt(source, biomeCorner.getX(), biomeCorner.getY() + biomeUp,
+                biomeCorner.getZ(), sampler, biome)) {
+            biomeUp += CENTER_STEP;
         }
         
-        while (biomeDown < 64 && !isCancelled(searchId) && getNoiseBiomeAtPos(source, biomeCorner.below(biomeDown), sampler).is(biome)) {
-            biomeDown += 8;
+        while (biomeDown < MAX_VERTICAL_DOWN && !isCancelled(searchId)
+                && isBiomeAt(source, biomeCorner.getX(), biomeCorner.getY() - biomeDown,
+                biomeCorner.getZ(), sampler, biome)) {
+            biomeDown += CENTER_STEP;
         }
         
         int centerY = biomeCorner.getY() + (biomeUp - biomeDown) / 2;
-        BlockPos yCentered = biomeCorner.atY(centerY);
+        int centerX = biomeCorner.getX();
+        int centerZ = biomeCorner.getZ();
         
-        while (biomeNorth < 800 && !isCancelled(searchId) && getNoiseBiomeAtPos(source, yCentered.north(biomeNorth), sampler).is(biome)) {
-            biomeNorth += 8;
+        while (biomeNorth < MAX_HORIZONTAL_DISTANCE && !isCancelled(searchId)
+                && isBiomeAt(source, centerX, centerY, centerZ - biomeNorth, sampler, biome)) {
+            biomeNorth += CENTER_STEP;
         }
         
-        while (biomeSouth < 800 && !isCancelled(searchId) && getNoiseBiomeAtPos(source, yCentered.south(biomeSouth), sampler).is(biome)) {
-            biomeSouth += 8;
+        while (biomeSouth < MAX_HORIZONTAL_DISTANCE && !isCancelled(searchId)
+                && isBiomeAt(source, centerX, centerY, centerZ + biomeSouth, sampler, biome)) {
+            biomeSouth += CENTER_STEP;
         }
         
-        while (biomeEast < 800 && !isCancelled(searchId) && getNoiseBiomeAtPos(source, yCentered.east(biomeEast), sampler).is(biome)) {
-            biomeEast += 8;
+        while (biomeEast < MAX_HORIZONTAL_DISTANCE && !isCancelled(searchId)
+                && isBiomeAt(source, centerX + biomeEast, centerY, centerZ, sampler, biome)) {
+            biomeEast += CENTER_STEP;
         }
         
-        while (biomeWest < 800 && !isCancelled(searchId) && getNoiseBiomeAtPos(source, yCentered.west(biomeWest), sampler).is(biome)) {
-            biomeWest += 8;
+        while (biomeWest < MAX_HORIZONTAL_DISTANCE && !isCancelled(searchId)
+                && isBiomeAt(source, centerX - biomeWest, centerY, centerZ, sampler, biome)) {
+            biomeWest += CENTER_STEP;
         }
         
-        return yCentered.offset(biomeEast - biomeWest, 0, biomeSouth - biomeNorth);
+        return new BlockPos(centerX + biomeEast - biomeWest, centerY, centerZ + biomeSouth - biomeNorth);
     }
 
-    private Holder<Biome> getNoiseBiomeAtPos(BiomeSource source, BlockPos pos, Climate.Sampler sampler){
-        return source.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2, sampler);
+    private boolean isBiomeAt(BiomeSource source, int x, int y, int z,
+                              Climate.Sampler sampler, ResourceLocation targetBiome) {
+        return source.getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y),
+                QuartPos.fromBlock(z), sampler).is(targetBiome);
     }
 }

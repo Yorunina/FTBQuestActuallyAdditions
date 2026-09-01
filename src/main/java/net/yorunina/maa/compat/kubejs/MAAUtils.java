@@ -314,4 +314,7 @@ public class MAAUtils {
         return level.getEntity(entityId);
     }
 
+    public Entity getEntityByUUID(ServerLevel level, UUID uuid){
+        return level.getEntities().get(uuid);
+    }
 }
