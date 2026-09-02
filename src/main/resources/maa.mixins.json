@@ -44,6 +44,7 @@
     "MixinPiglinAi",
     "MixinPlayer",
     "MixinQuest",
+    "MixinRefinedStorageEnergy",
     "MixinRollCapHandler",
     "MixinSandPaperItem",
     "MixinServerPlayer",
