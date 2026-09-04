@@ -116,6 +116,7 @@ dependencies {
     implementation fg.deobf("curse.maven:item-filters-309674:4838266")
     implementation fg.deobf("curse.maven:quests-additions-forge-580129:6004490")
     implementation fg.deobf("curse.maven:refined-storage-243076:4844585")
+    implementation fg.deobf("curse.maven:ftb-ultimine-forge-386134:7880472")
 
     implementation fg.deobf("curse.maven:lightmanscurrency-472521:7520021")
     implementation fg.deobf("curse.maven:tetra-289712:7769412")
