@@ -24,12 +24,12 @@ import java.util.Optional;
  * KubeJS' ItemMixin remains responsible for storing the original builder; MAA
  * reads it through the existing ItemKJS bridge.
  */
-@Mixin(value = Item.class, priority = 1000)
+@Mixin(value = Item.class)
 public abstract class MixinItem {
     @Unique
     @Nullable
     private MAAItemBuilderExtension maa$getItemBuilderExtension() {
-        ItemBuilder builder = ((ItemKJS) (Object) this).kjs$getItemBuilder();
+        ItemBuilder builder = ((ItemKJS) this).kjs$getItemBuilder();
         return builder instanceof MAAItemBuilderExtension extension ? extension : null;
     }
 

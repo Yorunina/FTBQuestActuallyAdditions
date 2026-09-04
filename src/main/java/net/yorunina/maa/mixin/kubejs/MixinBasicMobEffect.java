@@ -39,7 +39,7 @@ public abstract class MixinBasicMobEffect {
         }
     }
 
-    @Inject(method = "removeAttributeModifiers", at = @At("HEAD"), remap = false)
+    @Inject(method = "removeAttributeModifiers", at = @At("HEAD"), remap = true)
     private void maa$removeAttributeModifiers(LivingEntity livingEntity, AttributeMap attributeMap, int level, CallbackInfo ci) {
         applyAttributeModifications();
         if (maa$removeEffect != null) {
@@ -47,7 +47,7 @@ public abstract class MixinBasicMobEffect {
         }
     }
 
-    @Inject(method = "addAttributeModifiers", at = @At("HEAD"), remap = false)
+    @Inject(method = "addAttributeModifiers", at = @At("HEAD"), remap = true)
     private void maa$addAttributeModifiers(LivingEntity livingEntity, AttributeMap attributeMap, int level, CallbackInfo ci) {
         applyAttributeModifications();
         if (maa$addEffect != null) {
