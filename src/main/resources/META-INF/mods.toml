@@ -62,6 +62,12 @@ versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies."${mod_id}"]]
+modId = "kubejs"
+mandatory = true
+versionRange = "[2001.6.5,)"
+ordering = "AFTER"
+side = "BOTH"
+[[dependencies."${mod_id}"]]
 modId = "jei"
 mandatory = false
 versionRange = "[15,)"
