@@ -3,6 +3,7 @@ package net.yorunina.maa.mixin.biomancy;
 import com.github.elenterius.biomancy.entity.mob.FoodEater;
 import com.github.elenterius.biomancy.entity.mob.ai.goal.EatFoodItemGoal;
 import com.github.elenterius.biomancy.entity.mob.fleshblob.EaterFleshBlob;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.world.item.ItemStack;
@@ -30,13 +31,9 @@ public abstract class MixinEatFoodItemGoal {
         return original.call(eater);
     }
 
-    @WrapOperation(
-            method = "hasEdibleFood",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEdible()Z"),
-            remap = false
-    )
-    private boolean maa$allowOrganFood(ItemStack stack, Operation<Boolean> original) {
-        return original.call(stack) || BiomancyOrganHelper.canHoldOrganItem(stack);
+    @ModifyReturnValue(method = "hasEdibleFood", at = @At("RETURN"), remap = false)
+    private boolean maa$allowOrganFood(boolean original) {
+        return original || (this.maa$eater != null && BiomancyOrganHelper.canHoldOrganItem(this.maa$eater.getFoodItem()));
     }
 
     @WrapOperation(method = "start", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration()I"))
