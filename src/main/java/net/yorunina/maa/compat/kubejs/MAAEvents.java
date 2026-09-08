@@ -25,4 +25,6 @@ public class MAAEvents {
             .server("playerRoll", () -> RollEventJS.class);
     public static EventHandler FISHING_RETRIEVE = MAA_GROUP
             .server("fishingRetrieve", () -> FishingRetrieveEventJS.class).hasResult();
+    public static EventHandler REGISTRY_LEADERBOARDS_EVENT = MAA_GROUP
+            .startup("registryLeaderboards", () -> LeaderboardRegistryEventJS.class);
 }

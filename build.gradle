@@ -150,6 +150,7 @@ dependencies {
     implementation fg.deobf("curse.maven:bossesrise-1314084:8123166")
     implementation fg.deobf("curse.maven:irons-spells-n-spellbooks-855414:8364933")
     implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:7963208")
+    implementation fg.deobf("curse.maven:leaderboards-1367888:8201372")
 
     implementation fg.deobf("blank:chestcavity-1.20.1:2.16.7")
     implementation fg.deobf("blank:astages-1.20.1:2.4.0")

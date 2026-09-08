@@ -10,6 +10,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.ModList;
+import net.yorunina.maa.compat.leaderboards.LeaderboardsCompat;
 import net.yorunina.maa.items.RegistryItems;
 import net.yorunina.maa.networks.MAAQuestNetHandler;
 import net.yorunina.maa.registry.MAAGameRules;
@@ -35,11 +37,17 @@ public class ModpackActuallyAdditions {
         modEventBus.addListener(this::commonInit);
         if (FMLEnvironment.dist == Dist.CLIENT) modEventBus.addListener(this::clientInit);
         AARewardTypes.init();
+        if (ModList.get().isLoaded("leaderboards") && ModList.get().isLoaded("ftbquests")) {
+            LeaderboardsCompat.init();
+        }
         RegistryItems.register(modEventBus);
     }
 
     private void commonInit(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
+            if (ModList.get().isLoaded("leaderboards") && ModList.get().isLoaded("ftbquests")) {
+                LeaderboardsCompat.init();
+            }
             TasksRegistry.getInstance().init();
             STATS.forEach((location, statFormatter) -> {
                 Stats.CUSTOM.get(location);

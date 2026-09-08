@@ -1,5 +1,10 @@
 package net.yorunina.maa.compat.kubejs;
 
+import com.leclowndu93150.leaderboards.LeaderboardRegistry;
+import com.leclowndu93150.leaderboards.VanillaStatsRegistry;
+import com.leclowndu93150.leaderboards.data.Leaderboard;
+import com.leclowndu93150.leaderboards.util.OfflinePlayerStats;
+import com.leclowndu93150.leaderboards.util.StatFormatters;
 import dev.ftb.mods.ftbquests.api.QuestFile;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
@@ -8,9 +13,11 @@ import net.mehvahdjukaar.amendments.common.recipe.FluidAndItemCraftResult;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraftforge.fml.ModList;
 import net.unusual.block_factorys_bosses.capability.entity.RollCap;
 import net.yorunina.maa.client.RenderHelper;
 import net.yorunina.maa.client.vfx.PunchVFXManager;
+import net.yorunina.maa.compat.leaderboards.ServerAchieveStatTask;
 import net.yorunina.maa.registry.MAAStats;
 import net.yorunina.maa.utils.CompactMachineUtil;
 import net.yorunina.maa.utils.MobBattleUtil;
@@ -39,6 +46,14 @@ public class Plugin extends KubeJSPlugin {
         event.add("CompactMachineUtil", CompactMachineUtil.class);
         event.add("MobBattleUtil", MobBattleUtil.class);
         event.add("RollCap", RollCap.class);
+        event.add("LeaderboardRegistry", LeaderboardRegistry.class);
+        event.add("VanillaStatsRegistry", VanillaStatsRegistry.class);
+        event.add("Leaderboard", Leaderboard.class);
+        event.add("LeaderboardFromStat", Leaderboard.FromStat.class);
+        event.add("OfflinePlayerStats", OfflinePlayerStats.class);
+        event.add("StatFormatters", StatFormatters.class);
+
+        event.add("ServerAchieveStatTask", ServerAchieveStatTask.class);
         if (event.getType().isClient()) {
             event.add("RenderHelper", RenderHelper.INSTANCE);
             event.add("ShockwaveStyle", PunchVFXManager.ShockwaveStyle.class);

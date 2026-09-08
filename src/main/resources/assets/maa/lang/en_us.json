@@ -93,5 +93,12 @@
   "stat.maa.crops_planted": "Crops Planted on Crop Sticks",
   "maa.jei.category.agri_soil": "AgriCraft Soil Information",
   "maa.jei.agri_soil.growth_modifier": "Growth Modifier: %s",
-  "attribute.name.maa.loot_multiplier": "Loot Multiplier"
+  "attribute.name.maa.loot_multiplier": "Loot Multiplier",
+  "ftbquests.task.leaderboards.rank_task": "Rank Task",
+  "ftbquests.task.leaderboards.rank_task.leaderboard": "Related LeaderBoard",
+  "ftbquests.task.leaderboards.rank_task.rank": "Need Rank",
+  "ftbquests.task.leaderboards.rank_task.min": "Min Needed",
+  "ftbquests.task.leaderboards.server_achieve_stat": "Server Achieve Stat Task",
+  "ftbquests.task.leaderboards.server_achieve_stat.leaderboard": "Related LeaderBoard",
+  "ftbquests.task.leaderboards.server_achieve_stat.value": "Value"
 }
