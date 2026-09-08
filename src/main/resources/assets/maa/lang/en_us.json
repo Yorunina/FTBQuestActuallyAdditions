@@ -100,5 +100,6 @@
   "ftbquests.task.leaderboards.rank_task.min": "Min Needed",
   "ftbquests.task.leaderboards.server_achieve_stat": "Server Achieve Stat Task",
   "ftbquests.task.leaderboards.server_achieve_stat.leaderboard": "Related LeaderBoard",
-  "ftbquests.task.leaderboards.server_achieve_stat.value": "Value"
+  "ftbquests.task.leaderboards.server_achieve_stat.value": "Value",
+  "bio_forge_tab.biomancy.organ": "Organ"
 }

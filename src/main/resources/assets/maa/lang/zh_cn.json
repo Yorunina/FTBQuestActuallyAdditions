@@ -98,5 +98,6 @@
   "ftbquests.task.leaderboards.rank_task.min": "最低要求",
   "ftbquests.task.leaderboards.server_achieve_stat": "服务器统计任务",
   "ftbquests.task.leaderboards.server_achieve_stat.leaderboard": "相关排行榜",
-  "ftbquests.task.leaderboards.server_achieve_stat.value": "数值"
+  "ftbquests.task.leaderboards.server_achieve_stat.value": "数值",
+  "bio_forge_tab.biomancy.organ": "器官"
 }

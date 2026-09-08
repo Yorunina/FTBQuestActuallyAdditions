@@ -11,6 +11,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.ModList;
+import net.yorunina.maa.compat.biomancy.BiomancyBioForgeTabs;
 import net.yorunina.maa.compat.leaderboards.LeaderboardsCompat;
 import net.yorunina.maa.items.RegistryItems;
 import net.yorunina.maa.networks.MAAQuestNetHandler;
@@ -39,6 +40,9 @@ public class ModpackActuallyAdditions {
         AARewardTypes.init();
         if (ModList.get().isLoaded("leaderboards") && ModList.get().isLoaded("ftbquests")) {
             LeaderboardsCompat.init();
+        }
+        if (ModList.get().isLoaded("biomancy")) {
+            BiomancyBioForgeTabs.register(modEventBus);
         }
         RegistryItems.register(modEventBus);
     }

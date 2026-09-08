@@ -151,10 +151,10 @@ dependencies {
     implementation fg.deobf("curse.maven:irons-spells-n-spellbooks-855414:8364933")
     implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:7963208")
     implementation fg.deobf("curse.maven:leaderboards-1367888:8201372")
+    implementation fg.deobf("curse.maven:biomancy-492939:7417643")
 
     implementation fg.deobf("blank:chestcavity-1.20.1:2.16.7")
     implementation fg.deobf("blank:astages-1.20.1:2.4.0")
-    implementation fg.deobf("blank:biomancy-1.20.1:2.9.0.1")
 
     compileOnly(fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}"))
