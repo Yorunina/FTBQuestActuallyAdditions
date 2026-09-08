@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import ovo.yiran.geotetraarmor.items.ModularArmorItem;
+import se.mickelus.tetrawear.item.ModularArmor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class MixinArsEvents {
             return;
         }
         
-        if (itemStack.getItem() instanceof ModularArmorItem armor) {
+        if (itemStack.getItem() instanceof ModularArmor armor) {
             if (event.getSlotType() != armor.getEquipmentSlot()) {
                 ci.cancel();
                 return;
@@ -69,7 +69,7 @@ public class MixinArsEvents {
                     new AttributeModifier(
                         uuid, 
                         "mana_regen_enchant_modular", 
-                        (int)ServerConfig.MANA_REGEN_ENCHANT_BONUS.get() * manaRegenLevel, 
+                        ServerConfig.MANA_REGEN_ENCHANT_BONUS.get() * manaRegenLevel,
                         AttributeModifier.Operation.ADDITION
                     )
                 );
