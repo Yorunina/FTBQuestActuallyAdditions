@@ -16,7 +16,7 @@ import java.util.Optional;
 @Mixin(RecipeCraftingStateData.class)
 public abstract class MixinRecipeCraftingStateData {
     @Shadow(remap = false)
-    private ResourceLocation recipeId;
+    protected ResourceLocation recipeId;
 
     @Shadow(remap = false)
     protected abstract boolean isRecipeOfInstance(Recipe<?> recipe);
