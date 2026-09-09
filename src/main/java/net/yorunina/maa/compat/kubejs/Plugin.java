@@ -13,8 +13,6 @@ import net.mehvahdjukaar.amendments.common.recipe.FluidAndItemCraftResult;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraftforge.fml.ModList;
-import net.unusual.block_factorys_bosses.capability.entity.RollCap;
 import net.yorunina.maa.client.RenderHelper;
 import net.yorunina.maa.client.vfx.PunchVFXManager;
 import net.yorunina.maa.compat.leaderboards.ServerAchieveStatTask;
@@ -45,7 +43,6 @@ public class Plugin extends KubeJSPlugin {
         event.add("EnchantmentHelper", EnchantmentHelper.class);
         event.add("CompactMachineUtil", CompactMachineUtil.class);
         event.add("MobBattleUtil", MobBattleUtil.class);
-        event.add("RollCap", RollCap.class);
         event.add("LeaderboardRegistry", LeaderboardRegistry.class);
         event.add("VanillaStatsRegistry", VanillaStatsRegistry.class);
         event.add("Leaderboard", Leaderboard.class);

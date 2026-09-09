@@ -21,8 +21,6 @@ public class MAAEvents {
             .server("villagerUpdateSpecialPrices", () -> VillagerUpdateSpecialPrices.class);
     public static EventHandler PLAYER_DIMENSION_CHANGE = MAA_GROUP
             .server("playerDimensionChange", () -> PlayerDimensionChangeEventJS.class).hasResult();
-    public static EventHandler PLAYER_ROLL = MAA_GROUP
-            .server("playerRoll", () -> RollEventJS.class);
     public static EventHandler FISHING_RETRIEVE = MAA_GROUP
             .server("fishingRetrieve", () -> FishingRetrieveEventJS.class).hasResult();
     public static EventHandler REGISTRY_LEADERBOARDS_EVENT = MAA_GROUP

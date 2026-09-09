@@ -84,6 +84,8 @@
   ],
   "client": [
     "MixinClientQuestFile",
+    "MixinBossesRiseClientEvents",
+    "MixinBossesRiseKeyMappings",
     "MixinGanderRenderTypeStore",
     "MixinScreenEffectRenderer",
     "MixinWaypointEditorScreenRowPanel",
