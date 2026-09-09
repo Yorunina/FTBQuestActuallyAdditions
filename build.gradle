@@ -152,6 +152,7 @@ dependencies {
     implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:7963208")
     implementation fg.deobf("curse.maven:leaderboards-1367888:8201372")
     implementation fg.deobf("curse.maven:biomancy-492939:7417643")
+    compileOnly files("libs/lootr-1.20.1-0.7.35.94-mapped.jar")
 
     implementation fg.deobf("blank:chestcavity-1.20.1:2.16.7")
     implementation fg.deobf("blank:astages-1.20.1:2.4.0")

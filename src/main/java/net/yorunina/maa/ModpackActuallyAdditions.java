@@ -14,7 +14,9 @@ import net.minecraftforge.fml.ModList;
 import net.yorunina.maa.compat.leaderboards.LeaderboardsCompat;
 import net.yorunina.maa.items.RegistryItems;
 import net.yorunina.maa.networks.MAAQuestNetHandler;
+import net.yorunina.maa.registry.MAAAttributes;
 import net.yorunina.maa.registry.MAAGameRules;
+import net.yorunina.maa.registry.MAAMenus;
 import net.yorunina.maa.rewards.AARewardTypes;
 import net.yorunina.maa.tasks.TasksRegistry;
 import org.slf4j.Logger;
@@ -41,6 +43,8 @@ public class ModpackActuallyAdditions {
             LeaderboardsCompat.init();
         }
         RegistryItems.register(modEventBus);
+        MAAAttributes.ATTRIBUTES.register(modEventBus);
+        MAAMenus.MENUS.register(modEventBus);
     }
 
     private void commonInit(FMLCommonSetupEvent event) {

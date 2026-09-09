@@ -94,6 +94,7 @@
   "maa.jei.category.agri_soil": "AgriCraft Soil Information",
   "maa.jei.agri_soil.growth_modifier": "Growth Modifier: %s",
   "attribute.name.maa.loot_multiplier": "Loot Multiplier",
+  "attribute.name.maa.lootr_container_rows": "Lootr Container Rows",
   "ftbquests.task.leaderboards.rank_task": "Rank Task",
   "ftbquests.task.leaderboards.rank_task.leaderboard": "Related LeaderBoard",
   "ftbquests.task.leaderboards.rank_task.rank": "Need Rank",

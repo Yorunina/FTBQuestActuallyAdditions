@@ -92,6 +92,7 @@
   "maa.jei.category.agri_soil": "AgriCraft 土壤信息",
   "maa.jei.agri_soil.growth_modifier": "生长修正: %s",
   "attribute.name.maa.loot_multiplier": "战利品倍率",
+  "attribute.name.maa.lootr_container_rows": "Lootr容器行数",
   "ftbquests.task.leaderboards.rank_task": "排名任务",
   "ftbquests.task.leaderboards.rank_task.leaderboard": "相关排行榜",
   "ftbquests.task.leaderboards.rank_task.rank": "所需排名",

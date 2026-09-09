@@ -103,3 +103,9 @@ mandatory = false
 versionRange = "[2001.1.0,)"
 ordering = "AFTER"
 side = "BOTH"
+[[dependencies."${mod_id}"]]
+modId = "lootr"
+mandatory = false
+versionRange = "[0.7,)"
+ordering = "AFTER"
+side = "BOTH"
