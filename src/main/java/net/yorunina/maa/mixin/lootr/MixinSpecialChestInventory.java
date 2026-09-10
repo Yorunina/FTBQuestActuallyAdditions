@@ -14,7 +14,6 @@ import noobanidus.mods.lootr.data.ChestData;
 import noobanidus.mods.lootr.data.SpecialChestInventory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,7 +22,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Pseudo
 @Mixin(value = SpecialChestInventory.class, remap = false)
 public abstract class MixinSpecialChestInventory implements MAALootrInventory {
     @Unique

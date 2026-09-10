@@ -1,5 +1,6 @@
 package net.yorunina.maa.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -69,5 +70,9 @@ public class RenderHelper {
         entityRenderDispatcher.setRenderShadow(true);
         modelViewStack.popPose();
         RenderSystem.applyModelViewMatrix();
+    }
+
+    public boolean isKeyDown(int keyCode) {
+        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), keyCode);
     }
 }

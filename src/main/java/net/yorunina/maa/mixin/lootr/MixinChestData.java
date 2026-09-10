@@ -11,9 +11,7 @@ import net.yorunina.maa.compat.lootr.LootrContainerRows;
 import net.yorunina.maa.compat.lootr.MAALootrChestData;
 import noobanidus.mods.lootr.api.LootFiller;
 import noobanidus.mods.lootr.data.ChestData;
-import noobanidus.mods.lootr.data.SpecialChestInventory;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,7 +25,6 @@ import java.util.UUID;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 
-@Pseudo
 @Mixin(value = ChestData.class, remap = false)
 public abstract class MixinChestData implements MAALootrChestData {
     @Unique
@@ -105,8 +102,8 @@ public abstract class MixinChestData implements MAALootrChestData {
         }
     }
 
-    @Inject(method = "save(Lnet/minecraft/nbt/CompoundTag;)Lnet/minecraft/nbt/CompoundTag;", at = @At("RETURN"))
-    private void maa$savePlayerRows(CompoundTag compound, CallbackInfoReturnable<CompoundTag> cir) {
+    @Inject(method = "save(Lnet/minecraft/nbt/CompoundTag;)Lnet/minecraft/nbt/CompoundTag;", at = @At("RETURN"), remap = true)
+    private void maa$onSave(CompoundTag compound, CallbackInfoReturnable<CompoundTag> cir) {
         if (cir.getReturnValue() != null) {
             maa$savePlayerRows(cir.getReturnValue());
         }

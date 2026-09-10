@@ -14,13 +14,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Pseudo
-@Mixin(targets = "noobanidus.mods.lootr.block.entities.LootrChestBlockEntity$1")
+@Mixin(targets = "noobanidus.mods.lootr.block.entities.LootrChestBlockEntity$1", remap = false)
 public abstract class MixinLootrChestOpenersCounter {
-    @Shadow(remap = false)
+    @Shadow
     @Final
     private LootrChestBlockEntity this$0;
 
-    @Inject(method = "isOwnContainer(Lnet/minecraft/world/entity/player/Player;)Z", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "m_142718_", at = @At("HEAD"), cancellable = true)
     private void maa$recognizeCustomMenu(Player player, CallbackInfoReturnable<Boolean> cir) {
         if (!(player.containerMenu instanceof MAALootrChestMenu menu)) {
             return;
